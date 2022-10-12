@@ -4,8 +4,8 @@ library(tau)
 library(RSQLite)
 library(KoNLP) # 한국어 형태소 분석 R 패키지
 library(rJava) # KoNLP위한 패키지
-library(arules)
-library(igraph)
+library(arules) # 연관성 분석을 위한 패키지
+library(igraph) # 연관화 시각화를 위한 패키지
 library(tidyverse) # 깔끔한 데이터 처리 및 분석을 위한 패키지
 
 ### 데이터 전처리
@@ -113,15 +113,41 @@ str(melon_팝) # 1
 ## 갯수가 너무 적은거 제외하고 실행
 ## 포크, 록, 발라드, 성인가요, 댄스, 랩, 인디음악, 알앤비
 
-## 
+## 각 노래별 단어 추출
 lyric <- melon_알앤비$가사
-lword <- Map(extractNoun, lyric)
-lword <- unique(lword)
+lword <- Map(extractNoun, lyric) # 각 가사에서 명사단위로 추출
+length(lword) # 216
+lword <- unique(lword) # 중복된 가사가 있으면 제거
+length(lword) # 199
+str(lword)
+# List of 199
+# $ : chr [1:92] "널" "수" "나" "입술" ...
+# $ : chr [1:93] "아침" "거리" "허전" "나" ...
 
+## 추출한 리스트마다 그 안에 중복 단어 제거
 for (i in 1:length(lword)){
   lword[[i]] <- unique(lword[[i]])
 }
+str(lword)
+# List of 199
+# $ : chr [1:37] "널" "수" "나" "입술" ...
+# $ : chr [1:39] "아침" "거리" "허전" "나" ...
 
+head(lword, 2)
+# [[1]]
+# [1] "널"     "수"     "나"     "입술"   "너"     "어깨"   "우린"   "밤"     "끝"     "사랑"  
+# [11] "마지막" "입맞춤" "아쉬움" "손"     "내"     "세상"   "선물"   "거"     "누구"   "행복"  
+# [21] "하게"   "이상"   "초라"   "마"     "전"     "우리"   "이별"   "생각"   "테"     "가슴"  
+# [31] "간직"   "한"     "채"     "눈물"   "니가"   "겠지"   "지"    
+# 
+# [[2]]
+# [1] "아침"     "거리"     "허전"     "나"       "마음"     "내"       "주변"     "사람"    
+# [9] "모두"     "친군"     "머리"     "아픈일에" "때"       "생각"     "너"       "여기"    
+# [17] "우리"     "이름"     "친구"     "하루"     "어린"     "시절"     "지난"     "얘기"    
+# [25] "속"       "지루"     "널"       "기억"     "추억"     "시간"     "음"       "약속"    
+# [33] "서로"     "언제"     "위로"     "수"       "영원"     "한"       "일거"  
+
+## 2글자 이상인 단어만 추출하는 함수
 filter1 <- function(x){
   nchar(x) >= 2
 }
@@ -130,23 +156,63 @@ filter2 <- function(x){
   Filter(filter1, x)
 }
 
+
+## 줄 단위로 추출된 단어 전처리
 lword <- sapply(lword, filter2)
+head(lword, 2)
+# [[1]]
+# [1] "입술"   "어깨"   "우린"   "사랑"   "마지막" "입맞춤" "아쉬움" "세상"   "선물"   "누구"  
+# [11] "행복"   "하게"   "이상"   "초라"   "우리"   "이별"   "생각"   "가슴"   "간직"   "눈물"  
+# [21] "니가"   "겠지"  
+# 
+# [[2]]
+# [1] "아침"     "거리"     "허전"     "마음"     "주변"     "사람"     "모두"     "친군"    
+# [9] "머리"     "아픈일에" "생각"     "여기"     "우리"     "이름"     "친구"     "하루"    
+# [17] "어린"     "시절"     "지난"     "얘기"     "지루"     "기억"     "추억"     "시간"    
+# [25] "약속"     "서로"     "언제"     "위로"     "영원"     "일거"   
+
+## 연관성 분석
 wordtran <- as(lword, "transactions")
+wordtran
+# transactions in sparse format with
+# 199 transactions (rows) and
+# 2626 items (columns)
+
+## 교차표 작성
 wordtable <- crossTable(wordtran)
+wordtable
+# (It’s (늘지금처럼만) (왜냐구? (이제) ‘bout “Come “나와         ́d         ́ll
+# ́m         ́s 010 10 100000 11 24 365 3류도 70 about accompanied addicted
+# adore afraid again ah ahead ain ain’t Ain’t air alive all All ALL alone
+# already alright always Always am Amazed ambiguous an and And anymore anythin
+# anything Anything are arms around Around arrow art as ashake ask at attraction
 
-
+## 단어 간 연관 규칙 산출
 transrlues <- apriori(wordtran, parameter = list(support = 0.1, conf = 0.05))
+# writing ... [179 rule(s)] done [0.00s].
+# 179개의 규칙 확인
 
+## 결과 보기
 inspect(transrlues)
+
+## 연관 단어 시각화를 위해 구조 변경
 rules <- labels(transrlues, ruleSep = " ")
 head(rules, 20)
+
+## 문자열로 묶인 연관 단어를 행렬 구조 변경
 rules <- sapply(rules, strsplit, " ", USE.NAMES = F)
 rules
-class(rules)
+class(rules) # "list"
+
+## 행 단위로 묶어서 matrix로 반환
 rulemat <- do.call("rbind", rules)
 rulemat
+
+## 단어끼리 연결된 부분만 추출
 relueg <- graph.edgelist(rulemat[c(45:179),], directed = F)
 relueg
+
+## 연관그래프
 plot.igraph(relueg)
 
 # 포크[26:41]
