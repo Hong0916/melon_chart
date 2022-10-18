@@ -61,6 +61,8 @@ for(i in 1:nrow(melon_fin)) {
 }
 
 head(sort(table(melon_word), decreasing = TRUE))
+tail(sort(table(melon_word), decreasing = TRUE))
+
 # melon_word
 #melon_word
 # 나    너    내    하  사랑    말 
@@ -120,9 +122,7 @@ wordcloud(words = melon_word$word,   # 표시할 단어
 
 ## wordcloud2
 # wordcloud와는 다르게 데이터만 넣어주면 시각화 표현
-wordcloud2(melon_word)
-
-
+wordcloud2(data = melon_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
 
 ### 년도별 비교
 ## 10년 단위로 단어 수 비교(ex: 85~89, 90~99, ..., 20~21)
@@ -168,11 +168,11 @@ melon_10_word = wordmake(melon_10)
 melon_20_word = wordmake(melon_20)
 
 ## 각 년도별 단어 wordcloud2
-wordcloud2(melon_80_word)
-wordcloud2(melon_90_word)
-wordcloud2(melon_00_word)
-wordcloud2(melon_10_word)
-wordcloud2(melon_20_word)
+wordcloud2(melon_80_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(melon_90_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(melon_00_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(melon_10_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(melon_20_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
 
 
 ### 년도별 가장 많이 나온 단어 비율 수로 구하기
@@ -465,3 +465,38 @@ melon_20_artist <- as.data.frame(sort(table(as.character(melon_20$가수)), decr
 head(melon_20_artist, 6)
 ##################
 ##여기까지
+test <- head(melon_artist)
+test
+str(test)
+test_A = melon_fin[melon_fin$가수 == test$artist,]
+str(test_A)
+test_A = c(test$artist)
+test_A
+test_B = melon_fin[melon_fin$가수 == test_A,]
+str(test_B)
+test_B$가수 == '이선희'
+head(test_B)
+
+IU <- melon_fin[melon_fin$가수 == '아이유',]
+bigbang <- melon_fin[melon_fin$가수 == 'BIGBANG (빅뱅)',]
+bts <- melon_fin[melon_fin$가수 == '방탄소년단',]
+sg <- melon_fin[melon_fin$가수 == 'SG 워너비',]
+dabi <- melon_fin[melon_fin$가수 == '다비치',]
+lee <- melon_fin[melon_fin$가수 == '이선희',]
+unique(IU$장르)
+unique(bigbang$장르)
+unique(bts$장르)
+unique(sg$장르)
+unique(dabi$장르)
+unique(lee$장르)
+
+melon_top <- full_join(IU, bigbang)
+melon_top <- full_join(melon_top, bts)
+melon_top <- full_join(melon_top, sg)
+melon_top <- full_join(melon_top, dabi)
+melon_top <- full_join(melon_top, lee)
+
+str(melon_top)
+melon_top <- melon_top[2:3]
+head(melon_top)
+unique(melon_top$장르)
