@@ -223,3 +223,52 @@ plot.igraph(relueg)
 # 랩[95:532]
 # 인디[39:110]
 # 알앤비[45:179]
+
+
+
+##########################################################################################
+melon_igraph <- function(genre) {
+  lyric <- genre$가사
+  lword <- Map(extractNoun, lyric)
+  lword <- unique(lword)
+  
+  for (i in 1:length(lword)){
+    lword[[i]] <- unique(lword[[i]])
+  }
+
+  filter1 <- function(x){
+    nchar(x) >= 2
+  }
+  
+  filter2 <- function(x){
+    Filter(filter1, x)
+  }
+  
+  lword <- sapply(lword, filter2)
+  
+  wordtran <- as(lword, "transactions")
+  wordtable <- crossTable(wordtran)
+
+  ## 단어 간 연관 규칙 산출
+  transrlues <- apriori(wordtran, parameter = list(support = 0.1, conf = 0.05))
+  inspect(transrlues)
+  rules <- labels(transrlues, ruleSep = " ")
+  rules <- sapply(rules, strsplit, " ", USE.NAMES = F)
+  rulemat <- do.call("rbind", rules)
+}
+
+A <- melon_igraph(melon_댄스)
+
+relueg <- graph.edgelist(A[c(57:137),], directed = F)
+relueg
+
+## 연관그래프
+plot.igraph(relueg)
+
+
+B <- melon_igraph(melon_10)
+relueg <- graph.edgelist(B[c(51:104),], directed = F)
+relueg
+
+## 연관그래프
+plot.igraph(relueg)

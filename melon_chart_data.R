@@ -1,7 +1,6 @@
 library(KoNLP) # 한국어 형태소 분석 R 패키지
 library(rJava) # KoNLP위한 패키지
 library(tidyverse) # 깔끔한 데이터 처리 및 분석을 위한 패키지
-library(urltools) # 인코딩 된 문자열을 디코딩하여 확인
 library(RColorBrewer) # 다양한 색 포함하는 패키지
 library(wordcloud) # 덱스트클라우드를 위한 패키지
 library(wordcloud2) # 덱스트클라우드를 위한 패키지2
@@ -167,6 +166,11 @@ melon_00_word = wordmake(melon_00)
 melon_10_word = wordmake(melon_10)
 melon_20_word = wordmake(melon_20)
 
+# Dolphin이라는 노래에서 'da'가 반복적으로 나와서 제거
+subset(melon_20, 제목 == 'Dolphin')
+melon_20_word = melon_20_word[-5,]
+head(melon_20_word)
+
 ## 각 년도별 단어 wordcloud2
 wordcloud2(melon_80_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
 wordcloud2(melon_90_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
@@ -214,13 +218,13 @@ word_top <- append(word_top, head(melon_10_word)$word)
 word_top <- append(word_top, head(melon_20_word)$word)
 
 word_top
-# [1] "그대" "사랑" "떠나" "마음" "슬프" "우리" "사랑" "그대" "떠나" "마음" "다시" "이제" "사랑" "you"  "me"   "그대" "모르" "Oh"  
-# [19] "you"  "사랑" "me"   "the"  "da"   "그대"
+# [1] "그대" "사랑" "떠나" "마음" "슬프" "우리" "사랑" "그대" "떠나" "마음" "다시" "이제" "사랑" "그대" "you"  "다시" "떠나"
+# [18] "모르" "사랑" "you"  "me"   "그대" "모르" "Oh"   "you"  "사랑" "me"   "the"  "그대" "my"  
 
 ## 중복값 제거
 word_top <- unique(word_top)
 word_top
-# [1] "그대" "사랑" "떠나" "마음" "슬프" "우리" "다시" "이제" "you"  "me"   "모르" "Oh"   "the"  "da"  
+# [1] "그대" "사랑" "떠나" "마음" "슬프" "우리" "다시" "이제" "you"  "me"   "모르" "Oh"   "the"  "my"  
 
 ## word_top의 단어 각 년도별로 비율 구하기
 test_80 <- data.frame()
@@ -270,21 +274,21 @@ melon_word <- full_join(melon_word,test_00,by='word')
 melon_word <- full_join(melon_word,test_10,by='word')
 melon_word <- full_join(melon_word,test_20,by='word')
 melon_word
-#    word p_1980 p_1990  p_2000  p_2010 p_2020
-# 1  그대 5.0274 2.5631 2.06689 0.83240 1.0586
-# 2  사랑 5.0139 3.1485 3.09682 1.58596 1.3824
-# 3  떠나 2.2199 1.2173 0.81153 0.40583 0.3625
-# 4  마음 1.8701 1.1244 0.57508 0.43487 0.4592
-# 5  슬프 1.4530 0.8394 0.38773 0.20914 0.1643
-# 6  우리 1.3813 1.0578 0.67026 0.72617 0.8507
-# 7  다시 0.9328 1.1089 0.98986 0.50127 0.6864
-# 8  이제 0.9732 1.0779 0.65022 0.42408 0.4495
-# 9   you 0.1031 0.3252 1.21729 1.27142 1.3969
-# 10 모르 0.7176 0.7124 0.79850 0.75854 0.4640
-# 11   me     NA 0.1936 0.72136 0.86477 1.3389
-# 12   Oh     NA 0.1146 0.22943 0.74443 0.6671
-# 13  the     NA 0.2726 0.56105 0.40832 1.2181
-# 14   da     NA     NA 0.01803 0.00415 1.0828
+# word  p_1980 p_1990 p_2000 p_2010 p_2020
+# 1  그대 5.02736 2.5631 2.0669 0.8324 1.0702
+# 2  사랑 5.01390 3.1485 3.0968 1.5860 1.3976
+# 3  떠나 2.21993 1.2173 0.8115 0.4058 0.3665
+# 4  마음 1.87012 1.1244 0.5751 0.4349 0.4642
+# 5  슬프 1.45305 0.8394 0.3877 0.2091 0.1661
+# 6  우리 1.38129 1.0578 0.6703 0.7262 0.8600
+# 7  다시 0.93282 1.1089 0.9899 0.5013 0.6939
+# 8  이제 0.97318 1.0779 0.6502 0.4241 0.4545
+# 9   you 0.10315 0.3252 1.2173 1.2714 1.4122
+# 10 모르 0.71755 0.7124 0.7985 0.7585 0.4691
+# 11   my 0.07176 0.1766 0.5661 0.5245 1.0506
+# 12   me      NA 0.1936 0.7214 0.8648 1.3536
+# 13   Oh      NA 0.1146 0.2294 0.7444 0.6744
+# 14  the      NA 0.2726 0.5611 0.4083 1.2314
 
 ## 결측값은 0으로 기입
 melon_word[is.na(melon_word)] <- 0
@@ -500,3 +504,32 @@ str(melon_top)
 melon_top <- melon_top[2:3]
 head(melon_top)
 unique(melon_top$장르)
+
+
+## 영어 단어 포함된 노래만 추출
+# library(stringr);library(dplyr)
+# 가사에 있는 '\n'제거
+melon_fin$가사 <- gsub('\n', ' ', melon_fin$가사)
+
+# 영어가 포함된 노래만 추출
+melon_eng = melon_fin %>% filter(grepl("[a-zA-Z]", melon_fin$가사))
+str(melon_eng)
+
+# 년도를 기준으로 노래 갯수 확인
+melon_eng <- melon_eng %>%
+  group_by(년도) %>%
+  summarize(count = n())
+
+# 데이터 프레임 변환
+melon_eng <- as.data.frame(melon_eng, decreasing = TRUE)
+
+# 그래프
+ggplot(data = melon_eng)+
+  aes(x = 년도, y = count, group=1)+
+  geom_point()+
+  geom_line()
+
+# 상관관계 확인
+cor.test(melon_eng$년도, melon_eng$count)
+
+pairs(melon_eng)

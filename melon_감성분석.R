@@ -11,7 +11,6 @@ positive=positive[-1]
 
 negative <- readLines("negative.txt", encoding = "UTF-8")
 negative=negative[-1]
-negative
 
 sentimental = function(sentences, positive, negative){
   
@@ -38,7 +37,7 @@ sentimental = function(sentences, positive, negative){
   return(scores.df)
 }
 
-txt = melon_20$가사
+txt = melon_20$가사[178]
 txt = as.character(txt)
 
 result=sentimental(txt, positive, negative)
