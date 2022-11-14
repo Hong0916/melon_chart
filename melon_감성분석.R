@@ -37,10 +37,11 @@ sentimental = function(sentences, positive, negative){
   return(scores.df)
 }
 
-txt = melon_20$가사[178]
+txt = melon_20$가사
 txt = as.character(txt)
 
 result=sentimental(txt, positive, negative)
+str(result)
 
 result$color[result$score >=1] = "blue"
 result$color[result$score ==0] = "green"
@@ -64,7 +65,7 @@ pie(sentiment_result, main="감성분석 결과",
 sentiment_result
 
 
-sample_test <- function(melon_year){
+emotion <- function(melon_year){
   txt = as.character(melon_year$가사)
   result=sentimental(txt, positive, negative)
   
@@ -84,4 +85,4 @@ sample_test <- function(melon_year){
   sentiment_result
 }
 
-sample_test(melon_00)
+emotion(melon_20)

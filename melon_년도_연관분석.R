@@ -174,17 +174,24 @@ melon_igraph <- function(year) {
   rulemat <- do.call("rbind", rules)
 }
 
-A <- melon_igraph(melon_90)
+A <- melon_igraph(melon_80)
 
-relueg <- graph.edgelist(A[c(26:67),], directed = F)
+relueg <- graph.edgelist(A[c(18:58),], directed = F)
 relueg
 
 ## 연관그래프
 plot.igraph(relueg)
 
 
-B <- melon_igraph(melon_10)
-relueg <- graph.edgelist(B[c(51:104),], directed = F)
+B <- melon_igraph(melon_00)
+relueg <- graph.edgelist(B[c(42:211),], directed = F)
+relueg
+
+## 연관그래프
+plot.igraph(relueg)
+
+C <- melon_igraph(melon_20)
+relueg <- graph.edgelist(C[c(55:207),], directed = F)
 relueg
 
 ## 연관그래프
