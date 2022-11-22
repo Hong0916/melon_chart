@@ -121,7 +121,7 @@ wordcloud(words = melon_word$word,   # 표시할 단어
 
 ## wordcloud2
 # wordcloud와는 다르게 데이터만 넣어주면 시각화 표현
-wordcloud2(data = melon_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(data = melon_word,fontFamily = '나눔바른고딕')
 
 ### 년도별 비교
 ## 10년 단위로 단어 수 비교(ex: 85~89, 90~99, ..., 20~21)
@@ -172,11 +172,11 @@ melon_20_word = melon_20_word[-5,]
 head(melon_20_word)
 
 ## 각 년도별 단어 wordcloud2
-wordcloud2(melon_80_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
-wordcloud2(melon_90_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
-wordcloud2(melon_00_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
-wordcloud2(melon_10_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
-wordcloud2(melon_20_word,color = "random-light", backgroundColor = "#3D3D3E",fontFamily = '나눔바른고딕')
+wordcloud2(melon_80_word,fontFamily = '나눔바른고딕')
+wordcloud2(melon_90_word,fontFamily = '나눔바른고딕')
+wordcloud2(melon_00_word,fontFamily = '나눔바른고딕')
+wordcloud2(melon_10_word,fontFamily = '나눔바른고딕')
+wordcloud2(melon_20_word,fontFamily = '나눔바른고딕')
 
 
 ### 년도별 가장 많이 나온 단어 비율 수로 구하기

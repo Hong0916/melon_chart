@@ -31,15 +31,15 @@ melon_10 <- subset(melon_fin, 년도>=2010 & 년도<2020)
 melon_20 <- subset(melon_fin, 년도>=2020)
 
 ## 각 년도별 단어 추출
-lyric <- melon_80$가사
+lyric <- melon_80$가사 # 80년대 가사 활용
 lword <- Map(extractNoun, lyric) # 각 가사에서 명사단위로 추출
 length(lword) # 500
 lword <- unique(lword) # 중복된 가사가 있으면 제거
 length(lword) # 426
 str(lword)
-# List of 199
-# $ : chr [1:92] "널" "수" "나" "입술" ...
-# $ : chr [1:93] "아침" "거리" "허전" "나" ...
+# List of 426
+# $ : chr [1:32] "눈물" "줄" "사랑" "줄" ...
+# $ : chr [1:86] "바람" "소리" "인생" "길" ...
 
 ## 추출한 리스트마다 그 안에 중복 단어 제거
 for (i in 1:length(lword)){
@@ -78,31 +78,27 @@ filter2 <- function(x){
 lword <- sapply(lword, filter2)
 head(lword, 2)
 # [[1]]
-# [1] "입술"   "어깨"   "우린"   "사랑"   "마지막" "입맞춤" "아쉬움" "세상"   "선물"   "누구"  
-# [11] "행복"   "하게"   "이상"   "초라"   "우리"   "이별"   "생각"   "가슴"   "간직"   "눈물"  
-# [21] "니가"   "겠지"  
+# [1] "눈물"  "사랑"  "오늘"  "자욱"  "연기"  "사이"  "어둔"  "기억"  "마음"  "구석"  "불씨"  "*이제"
+# [13] "진정"  "얘기"  "눈길"  "그대"  "반복" 
 # 
 # [[2]]
-# [1] "아침"     "거리"     "허전"     "마음"     "주변"     "사람"     "모두"     "친군"    
-# [9] "머리"     "아픈일에" "생각"     "여기"     "우리"     "이름"     "친구"     "하루"    
-# [17] "어린"     "시절"     "지난"     "얘기"     "지루"     "기억"     "추억"     "시간"    
-# [25] "약속"     "서로"     "언제"     "위로"     "영원"     "일거"   
+# [1] "바람" "소리" "인생" "우린" "사랑" "가슴" "정처" "방황" "사람" "시작" "어제" "오늘" "우리" "무엇"
+# [15] "미련"
+
 
 ## 연관성 분석
 wordtran <- as(lword, "transactions")
 wordtran
 # transactions in sparse format with
-# 199 transactions (rows) and
-# 2626 items (columns)
+# 426 transactions (rows) and
+# 2345 items (columns)
 
 ## 교차표 작성
 wordtable <- crossTable(wordtran)
 wordtable
-# (It’s (늘지금처럼만) (왜냐구? (이제) ‘bout “Come “나와         ́d         ́ll
-# ́m         ́s 010 10 100000 11 24 365 3류도 70 about accompanied addicted
-# adore afraid again ah ahead ain ain’t Ain’t air alive all All ALL alone
-# already alright always Always am Amazed ambiguous an and And anymore anythin
-# anything Anything are arms around Around arrow art as ashake ask at attraction
+# *repeat>흰 *이제 2떠나가는 al all alta amor and any arrastra ASIA barco
+# beams birthday boughs bread but buy can carino Carino Chiquilla como
+# corazon CRACKER crinkle crust daffodils day directo DJ do dollars donde
 
 ## 단어 간 연관 규칙 산출
 transrlues <- apriori(wordtran, parameter = list(support = 0.1, conf = 0.05))
