@@ -1,7 +1,7 @@
 library(KoNLP) # 한국어 형태소 분석 R 패키지
 library(rJava) # KoNLP위한 패키지
 library(arules) # 연관성 분석을 위한 패키지
-library(igraph) # 연관화 시각화를 위한 패키지
+library(igraph) # 연관성 시각화를 위한 패키지
 
 ### 데이터 전처리
 ## 파일 가져오기
@@ -102,8 +102,8 @@ wordtable
 
 ## 단어 간 연관 규칙 산출
 transrlues <- apriori(wordtran, parameter = list(support = 0.1, conf = 0.05))
-# writing ... [179 rule(s)] done [0.00s].
-# 179개의 규칙 확인
+# writing ... [58 rule(s)] done [0.00s].
+# 58개의 규칙 확인
 
 ## 결과 보기
 inspect(transrlues)
@@ -122,21 +122,13 @@ rulemat <- do.call("rbind", rules)
 rulemat
 
 ## 단어끼리 연결된 부분만 추출
-relueg <- graph.edgelist(rulemat[c(18:58),], directed = F)
-relueg
+releg <- graph.edgelist(rulemat[c(18:58),], directed = F)
+releg
 
 ## 연관그래프
-plot.igraph(relueg)
-
-# 포크[26:41]
-# 록[24:47]
-# 발라드[32:129]
-# 성인가요[21:82]
-# 댄스[57:137]
-# 랩[95:532]
-# 인디[39:110]
-# 알앤비[45:179]
-
+plot.igraph(releg, vertex.label = V(releg)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
 
 
 ##########################################################################################
@@ -170,25 +162,36 @@ melon_igraph <- function(year) {
   rulemat <- do.call("rbind", rules)
 }
 
-A <- melon_igraph(melon_80)
-
-relueg <- graph.edgelist(A[c(18:58),], directed = F)
-relueg
-
-## 연관그래프
-plot.igraph(relueg)
+mel_rel80 <- melon_igraph(melon_80)
+releg80 <- graph.edgelist(mel_rel80[c(18:58),], directed = F)
+plot.igraph(releg80, vertex.label = V(releg80)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
 
 
-B <- melon_igraph(melon_00)
-relueg <- graph.edgelist(B[c(42:211),], directed = F)
-relueg
+mel_rel90 <- melon_igraph(melon_90)
+releg90 <- graph.edgelist(mel_rel90[c(26:67),], directed = F)
+plot.igraph(releg90, vertex.label = V(releg90)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
 
-## 연관그래프
-plot.igraph(relueg)
 
-C <- melon_igraph(melon_20)
-relueg <- graph.edgelist(C[c(55:207),], directed = F)
-relueg
+mel_rel00 <- melon_igraph(melon_00)
+releg00 <- graph.edgelist(mel_rel00[c(42:211),], directed = F)
+plot.igraph(releg00, vertex.label = V(releg00)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
 
-## 연관그래프
-plot.igraph(relueg)
+
+mel_rel10 <- melon_igraph(melon_10)
+releg10 <- graph.edgelist(mel_rel10[c(51:104),], directed = F)
+plot.igraph(releg10, vertex.label = V(releg10)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
+
+
+mel_rel20 <- melon_igraph(melon_20)
+releg20 <- graph.edgelist(mel_rel20[c(55:207),], directed = F)
+plot.igraph(releg20, vertex.label = V(releg20)$name, vertex.label.cex = 1.0,
+            vertex.label.color = 'black', vertex.size = 20, vertex.color='gray',
+            vertex.frame.color = 'blue')
